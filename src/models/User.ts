@@ -15,4 +15,7 @@ const UserSchema = new Schema({
   image: { type: String, default: '' },
 }, { timestamps: true });
 
-export const User = models.User || model('User', UserSchema);
+// Clear mongoose User model cache in development to prevent schema validation errors
+delete mongoose.models.User;
+
+export const User = mongoose.models.User || model('User', UserSchema);
