@@ -4,6 +4,7 @@ const VideoSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   videoUrl: { type: String, required: true },
+  type: { type: String, enum: ['video', 'tute', 'paper'], default: 'video' },
   uploadedBy: { type: String, default: 'Admin' },
 }, { timestamps: true });
 

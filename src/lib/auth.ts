@@ -1,46 +1,105 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import dbConnect from "@/lib/db";
+import { User } from "@/models/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Implementation will connect to DB to verify user
-        // For now, return null to signify failure if no DB connection
-        return null;
-      }
-    })
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Please enter email and password");
+        }
+
+        await dbConnect();
+
+        // Admin hardcoded check — also creates/updates admin record in DB for profile persistence
+        if (credentials.email === "admin@gmail.com" && credentials.password === "1234") {
+          // Upsert admin in DB so profile (name, image) can be saved & persisted
+          const hashedPassword = await bcrypt.hash("1234", 10);
+          const adminUser = await User.findOneAndUpdate(
+            { email: "admin@gmail.com" },
+            {
+              $setOnInsert: {
+                name: "Admin",
+                email: "admin@gmail.com",
+                password: hashedPassword,
+                role: "admin",
+                image: "",
+              },
+            },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+          );
+
+          return {
+            id: adminUser._id.toString(),
+            name: adminUser.name || "Admin",
+            email: "admin@gmail.com",
+            role: "admin",
+            image: adminUser.image || "",
+          };
+        }
+
+        // Regular user login
+        const user = await User.findOne({ email: credentials.email });
+
+        if (!user || !user.password) {
+          throw new Error("Invalid email or password");
+        }
+
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isCorrectPassword) {
+          throw new Error("Invalid email or password");
+        }
+
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role || "student",
+          image: user.image || "",
+        };
+      },
+    }),
   ],
-  session: {
-    strategy: "jwt",
-  },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.role = (user as any).role || "STUDENT";
+        token.role = (user as any).role;
+        token.id = user.id;
+        token.picture = (user as any).image;
+      }
+      // Handle session update trigger (profile save)
+      if (trigger === "update" && session) {
+        if (session.user?.name) token.name = session.user.name;
+        if (session.user?.image) token.picture = session.user.image;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        (session.user as any).role = token.role;
+      if (token && session.user) {
+        (session.user as any).id = token.id as string;
+        (session.user as any).role = token.role as string;
+        session.user.image = token.picture as string;
       }
       return session;
-    }
+    },
   },
   pages: {
-    signIn: "/auth/signin",
-  }
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET || "fallback_secret_for_local_dev_12345",
 };
-
-export default NextAuth(authOptions);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { Video } from "@/models/Video";
 
@@ -23,10 +23,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, description, videoUrl } = await req.json();
+    const { title, description, videoUrl, type } = await req.json();
     await dbConnect();
 
-    const newVideo = await Video.create({ title, description, videoUrl });
+    const newVideo = await Video.create({ title, description, videoUrl, type: type || 'video' });
     return NextResponse.json(newVideo, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to create video" }, { status: 500 });

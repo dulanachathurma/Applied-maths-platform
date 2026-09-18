@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -25,9 +25,18 @@ export default function Login() {
       });
 
       if (res?.error) {
-        setError(res.error || "Invalid credentials");
+        setError("Invalid email or password. Please try again.");
       } else {
-        router.push("/dashboard/student");
+        // Fetch session to determine role and redirect
+        const sessionRes = await fetch("/api/auth/session");
+        const session = await sessionRes.json();
+        const role = session?.user?.role;
+
+        if (role === "admin") {
+          router.push("/dashboard/admin");
+        } else {
+          router.push("/dashboard/student");
+        }
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");

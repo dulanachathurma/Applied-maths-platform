@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+export const dynamic = 'force-dynamic';
+
+import { authOptions } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import { Course } from "@/models/Course";
 import { Enrollment } from "@/models/Enrollment";

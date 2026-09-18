@@ -12,9 +12,9 @@ export async function POST(req: Request) {
       email, 
       password, 
       contactNumber, 
-      address, 
+      homeAddress, 
       district, 
-      school, 
+      schoolName, 
       alYear 
     } = data;
 
@@ -50,11 +50,11 @@ export async function POST(req: Request) {
       lastName,
       email,
       password: hashedPassword,
-      contactNumber,
-      address,
-      district,
-      school,
-      alYear,
+      contactNumber: contactNumber || '',
+      homeAddress: homeAddress || '',
+      district: district || '',
+      schoolName: schoolName || '',
+      alYear: alYear || '',
       role: "student",
     });
 
