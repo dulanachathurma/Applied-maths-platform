@@ -14,6 +14,11 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  if (!MONGODB_URI) {
+    console.warn("⚠️ MONGODB_URI is not defined. Skipping DB connection.");
+    return null;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
