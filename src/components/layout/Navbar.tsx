@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { useLanguage } from "../LanguageProvider";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -11,23 +13,13 @@ export default function Navbar() {
   const [userImage, setUserImage] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
   const [langDropdown, setLangDropdown] = useState(false);
-  const [currentLang, setCurrentLang] = useState("ENGLISH");
-  const [isDark, setIsDark] = useState(true);
+  
+  const { theme, setTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check local storage or system preference
-    const savedTheme = localStorage.getItem("app_theme");
-    if (savedTheme === "light") {
-      setIsDark(false);
-      document.documentElement.classList.remove("dark");
-    } else {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    }
-
-    const savedLang = localStorage.getItem("app_lang") || "ENGLISH";
-    setCurrentLang(savedLang);
-
+    setMounted(true);
     if (session?.user) {
       fetch("/api/user/profile")
         .then((res) => res.json())
@@ -43,21 +35,11 @@ export default function Navbar() {
   }, [session]);
 
   const toggleTheme = () => {
-    if (isDark) {
-      setIsDark(false);
-      localStorage.setItem("app_theme", "light");
-      document.documentElement.classList.remove("dark");
-    } else {
-      setIsDark(true);
-      localStorage.setItem("app_theme", "dark");
-      document.documentElement.classList.add("dark");
-    }
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const changeLanguage = (lang: string) => {
-    setCurrentLang(lang);
-    localStorage.setItem("app_lang", lang);
-    window.dispatchEvent(new Event("languageChange"));
+  const changeLanguage = (lang: "en" | "si") => {
+    setLanguage(lang);
     setLangDropdown(false);
   };
 
@@ -65,11 +47,11 @@ export default function Navbar() {
   const dashboardPath = isAdmin ? "/dashboard/admin" : "/dashboard/student";
 
   const navLinks = [
-    { name: currentLang === "සිංහල" ? "මුල් පිටුව" : "Home", href: "/" },
-    { name: currentLang === "සිංහල" ? "පාඨමාලා" : "Courses", href: "/courses" },
-    { name: currentLang === "සිංහල" ? "අප ගැන" : "About", href: "/about" },
-    { name: currentLang === "සිංහල" ? "සම්බන්ධ වන්න" : "Contact", href: "/contact" },
-    { name: currentLang === "සිංහල" ? "ගෙවීම්" : "payment", href: "/payment" },
+    { name: language === "si" ? "මුල් පිටුව" : "Home", href: "/" },
+    { name: language === "si" ? "පාඨමාලා" : "Courses", href: "/courses" },
+    { name: language === "si" ? "අප ගැන" : "About", href: "/about" },
+    { name: language === "si" ? "සම්බන්ධ වන්න" : "Contact", href: "/contact" },
+    { name: language === "si" ? "ගෙවීම්" : "payment", href: "/payment" },
   ];
 
   return (
@@ -100,27 +82,26 @@ export default function Navbar() {
           );
         })}
 
-        {/* Language Dropdown */}
         <div className="relative">
           <button
             onClick={() => setLangDropdown(!langDropdown)}
             className="flex items-center space-x-1 text-blue-500 hover:text-blue-400 font-semibold text-xs uppercase"
           >
             <span className="text-sm">🌐</span>
-            <span>{currentLang}</span>
+            <span>{language === "si" ? "සිංහල" : "ENGLISH"}</span>
             <span className="text-[10px]">∨</span>
           </button>
           {langDropdown && (
             <div className="absolute right-0 mt-2 w-32 bg-[#141b2d] border border-slate-800 rounded-xl shadow-2xl py-2 text-xs z-50">
               <button 
-                onClick={() => changeLanguage("ENGLISH")}
-                className={`w-full text-left px-4 py-1.5 font-medium ${currentLang === "ENGLISH" ? "text-amber-400 font-bold bg-slate-800/80" : "text-white hover:bg-slate-800/60"}`}
+                onClick={() => changeLanguage("en")}
+                className={`w-full text-left px-4 py-1.5 font-medium ${language === "en" ? "text-amber-400 font-bold bg-slate-800/80" : "text-white hover:bg-slate-800/60"}`}
               >
                 English
               </button>
               <button 
-                onClick={() => changeLanguage("සිංහල")}
-                className={`w-full text-left px-4 py-1.5 font-medium ${currentLang === "සිංහල" ? "text-amber-400 font-bold bg-slate-800/80" : "text-gray-300 hover:bg-slate-800/60"}`}
+                onClick={() => changeLanguage("si")}
+                className={`w-full text-left px-4 py-1.5 font-medium ${language === "si" ? "text-amber-400 font-bold bg-slate-800/80" : "text-gray-300 hover:bg-slate-800/60"}`}
               >
                 සිංහල
               </button>
@@ -134,7 +115,7 @@ export default function Navbar() {
           title="Toggle Light / Dark Mode"
           className="text-blue-400 hover:text-blue-300 text-lg transition-transform active:scale-90"
         >
-          {isDark ? "🌙" : "☀️"}
+          {theme === "dark" ? "🌙" : "☀️"}
         </button>
 
         {session ? (
@@ -150,14 +131,14 @@ export default function Navbar() {
                   <span className="text-[9px] font-bold text-white">{userName?.charAt(0) || "U"}</span>
                 )}
               </div>
-              <span>{currentLang === "සිංහල" ? "පාලක පුවරුව" : "Dashboard"}</span>
+              <span>{language === "si" ? "පාලක පුවරුව" : "Dashboard"}</span>
             </Link>
 
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
               className="bg-[#381114] text-red-400 hover:bg-red-900/80 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors"
             >
-              {currentLang === "සිංහල" ? "ඉවත් වන්න" : "Sign out"}
+              {language === "si" ? "ඉවත් වන්න" : "Sign out"}
             </button>
           </div>
         ) : (
