@@ -51,7 +51,7 @@ export default function Navbar() {
     { name: language === "si" ? "පාඨමාලා" : "Courses", href: "/courses" },
     { name: language === "si" ? "අප ගැන" : "About", href: "/about" },
     { name: language === "si" ? "සම්බන්ධ වන්න" : "Contact", href: "/contact" },
-    { name: language === "si" ? "ගෙවීම්" : "payment", href: "/payment" },
+    { name: language === "si" ? "ගෙවීම්" : "Pricing", href: "/payment" },
   ];
 
   return (

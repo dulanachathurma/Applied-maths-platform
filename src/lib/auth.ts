@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/db";
@@ -17,36 +17,33 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please enter email and password");
         }
 
-        await dbConnect();
-
-        // Admin hardcoded check — also creates/updates admin record in DB for profile persistence
-        if (credentials.email === "admin" && credentials.password === "Admin@123") {
-          // Upsert admin in DB so profile (name, image) can be saved & persisted
-          const hashedPassword = await bcrypt.hash("Admin@123", 10);
-          const adminUser = await User.findOneAndUpdate(
-            { email: "admin" },
-            {
-              $setOnInsert: {
-                name: "Admin",
-                email: "admin",
-                password: hashedPassword,
-                role: "admin",
-                image: "",
-              },
-            },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          );
-
-          return {
-            id: adminUser._id.toString(),
-            name: adminUser.name || "Admin",
-            email: "admin",
-            role: "admin",
-            image: adminUser.image || "",
-          };
+        // ─── Admin hardcoded check (works without DB) ───────────────────────
+        if (
+          (credentials.email === "admin" || credentials.email === "admin@admin.com") &&
+          credentials.password === "Admin@123"
+        ) {
+          // Try to persist admin in DB if possible (non-blocking)
+          try {
+            await dbConnect();
+            const hashedPassword = await bcrypt.hash("Admin@123", 10);
+            await User.findOneAndUpdate(
+              { email: "admin" },
+              { $setOnInsert: { name: "Admin", email: "admin", password: hashedPassword, role: "admin", image: "" } },
+              { upsert: true, new: true, setDefaultsOnInsert: true }
+            );
+          } catch {
+            // DB unavailable — admin login still works
+          }
+          return { id: "admin-001", name: "Admin", email: "admin", role: "admin", image: "" };
         }
 
-        // Regular user login
+        // Regular user login — requires DB
+        try {
+          await dbConnect();
+        } catch {
+          throw new Error("Database connection failed. Please try again later.");
+        }
+
         const user = await User.findOne({ email: credentials.email });
 
         if (!user || !user.password) {
