@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Course } from "@/models/Course";
 import dbConnect from "@/lib/db";
 import { notFound } from "next/navigation";
