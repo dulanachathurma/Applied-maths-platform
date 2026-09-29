@@ -20,15 +20,15 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
 
         // Admin hardcoded check — also creates/updates admin record in DB for profile persistence
-        if (credentials.email === "admin@gmail.com" && credentials.password === "1234") {
+        if (credentials.email === "admin" && credentials.password === "Admin@123") {
           // Upsert admin in DB so profile (name, image) can be saved & persisted
-          const hashedPassword = await bcrypt.hash("1234", 10);
+          const hashedPassword = await bcrypt.hash("Admin@123", 10);
           const adminUser = await User.findOneAndUpdate(
-            { email: "admin@gmail.com" },
+            { email: "admin" },
             {
               $setOnInsert: {
                 name: "Admin",
-                email: "admin@gmail.com",
+                email: "admin",
                 password: hashedPassword,
                 role: "admin",
                 image: "",
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
           return {
             id: adminUser._id.toString(),
             name: adminUser.name || "Admin",
-            email: "admin@gmail.com",
+            email: "admin",
             role: "admin",
             image: adminUser.image || "",
           };

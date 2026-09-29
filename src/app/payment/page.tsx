@@ -79,7 +79,7 @@ function PaymentModal({
 }) {
   const [step, setStep] = useState<"details" | "method" | "processing" | "success">("details");
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
-  const [method, setMethod] = useState<"card" | "mobile" | "">("");
+  const [method, setMethod] = useState<"stripe" | "simulated" | "">("");
 
   const handlePay = async () => {
     setStep("processing");
@@ -168,41 +168,46 @@ function PaymentModal({
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <p className="text-muted-foreground text-sm mb-2">Choose your payment method:</p>
 
-                {/* Card */}
+                {/* Stripe */}
                 <button
-                  onClick={() => setMethod("card")}
+                  onClick={() => setMethod("stripe")}
                   className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all ${
-                    method === "card"
+                    method === "stripe"
                       ? "border-primary bg-primary/10"
                       : "border-border dark:border-white/10 bg-zinc-50 dark:bg-white/3 hover:border-zinc-300 dark:hover:border-white/20"
                   }`}
                 >
                   <CreditCard className="w-6 h-6 text-primary" />
                   <div className="text-left">
-                    <div className="text-foreground font-medium">Card Payment</div>
-                    <div className="text-muted-foreground text-xs">Visa / Mastercard</div>
+                    <div className="text-foreground font-medium">Stripe Card Payment</div>
+                    <div className="text-muted-foreground text-xs">Visa, Mastercard, Amex via Stripe Secure Checkout</div>
                   </div>
-                  <div className="ml-auto flex gap-1">
-                    {["VISA", "MC"].map((c) => (
-                      <span key={c} className="text-[10px] font-bold bg-zinc-200 dark:bg-white/10 px-2 py-1 rounded text-muted-foreground">{c}</span>
-                    ))}
-                  </div>
+                  {method === "stripe" && (
+                    <div className="ml-auto flex gap-1">
+                      <Check className="w-5 h-5 text-green-500" />
+                    </div>
+                  )}
                 </button>
 
-                {/* Mobile Banking */}
+                {/* Simulated */}
                 <button
-                  onClick={() => setMethod("mobile")}
+                  onClick={() => setMethod("simulated")}
                   className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all ${
-                    method === "mobile"
+                    method === "simulated"
                       ? "border-primary bg-primary/10"
                       : "border-border dark:border-white/10 bg-zinc-50 dark:bg-white/3 hover:border-zinc-300 dark:hover:border-white/20"
                   }`}
                 >
-                  <Smartphone className="w-6 h-6 text-primary" />
+                  <CreditCard className="w-6 h-6 text-primary" />
                   <div className="text-left">
-                    <div className="text-foreground font-medium">Mobile Banking</div>
-                    <div className="text-muted-foreground text-xs">PayHere / eZ Cash / mCash</div>
+                    <div className="text-foreground font-medium">Simulated Card Payment</div>
+                    <div className="text-muted-foreground text-xs">Visa, Mastercard and other major cards</div>
                   </div>
+                  {method === "simulated" && (
+                    <div className="ml-auto flex gap-1">
+                      <Check className="w-5 h-5 text-green-500" />
+                    </div>
+                  )}
                 </button>
 
                 {/* Order Summary */}
