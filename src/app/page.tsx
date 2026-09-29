@@ -54,7 +54,7 @@ export default function Home() {
 
         <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
           <div className="inline-flex items-center gap-2 bg-[#1c160c] border border-amber-500/50 text-amber-400 px-5 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-lg shadow-amber-500/10">
-            <span>★ Sri Lanka's #1 A/L Applied Maths Platform</span>
+            <span>★ Sri Lanka&apos;s #1 A/L Applied Maths Platform</span>
           </div>
 
           <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight leading-none mb-2 drop-shadow-lg">
@@ -63,7 +63,7 @@ export default function Home() {
           </h1>
 
           <p className="max-w-2xl text-sm sm:text-base text-gray-200 mt-6 mb-8 leading-relaxed font-normal drop-shadow">
-            Join Dulana Chathurma's exclusive online platform designed to transform your understanding of physics and mathematics for the Sri Lankan A/L examinations.
+            Join Dulana Chathurma&apos;s exclusive online platform designed to transform your understanding of physics and mathematics for the Sri Lankan A/L examinations.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 w-full sm:w-auto">
