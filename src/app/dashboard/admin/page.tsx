@@ -101,17 +101,17 @@ export default function AdminDashboard() {
 
       {/* Welcome Section */}
       <div className="animate-fade-in-up">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1f35] via-[#141929] to-[#0d1117] border border-white/5 p-8 sm:p-10">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50 via-white to-amber-50 border border-slate-200 p-8 sm:p-10 shadow-sm">
           {/* Background Effects */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-200/40 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200/40 rounded-full blur-3xl" />
           
           <div className="relative z-10">
             <p className="text-slate-500 text-sm font-medium mb-2 animate-fade-in-up delay-100">{currentTime}</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3 animate-fade-in-up delay-200">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3 animate-fade-in-up delay-200 text-slate-900">
               Welcome back, <span className="text-gradient">{userName}</span> 👋
             </h1>
-            <p className="text-slate-400 text-base sm:text-lg max-w-2xl animate-fade-in-up delay-300">
+            <p className="text-slate-600 text-base sm:text-lg max-w-2xl animate-fade-in-up delay-300">
               Manage your platform, upload lessons, and keep track of your educational content from one powerful dashboard.
             </p>
           </div>
@@ -127,9 +127,8 @@ export default function AdminDashboard() {
               key={stat.title}
               href={stat.href || "#"}
               className={`
-                glass-card rounded-2xl p-6 
-                bg-gradient-to-br ${stat.gradient}
-                border ${stat.border}
+                bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow
+                border border-slate-200
                 animate-fade-in-up
                 ${stat.href ? "cursor-pointer" : ""}
               `}
@@ -137,9 +136,8 @@ export default function AdminDashboard() {
             >
               <div className="flex items-start justify-between mb-4">
                 <span className="text-3xl animate-float" style={{ animationDelay: `${i * 200}ms` }}>{stat.icon}</span>
-                <div className="animate-shimmer w-8 h-1 rounded-full" />
               </div>
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">{stat.title}</p>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">{stat.title}</p>
               <p className={`text-2xl font-bold ${stat.color} animate-count-up`}>
                 {stat.value}
               </p>
@@ -149,47 +147,25 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 animate-fade-in-up delay-500">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-5 animate-fade-in-up delay-500">
         <Link
           href="/dashboard/admin/courses"
-          className="glass-card rounded-2xl p-6 sm:p-8 group"
+          className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 group shadow-sm hover:shadow-md transition-shadow"
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
               📹
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Manage Courses</h3>
+              <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-600 transition-colors">Manage Courses</h3>
               <p className="text-xs text-slate-500">Add, edit, or delete video lessons</p>
             </div>
           </div>
-          <p className="text-sm text-slate-400 leading-relaxed">
+          <p className="text-sm text-slate-600 leading-relaxed">
             Upload new YouTube lessons, manage existing content, and organize your course materials for students.
           </p>
-          <div className="mt-4 flex items-center gap-2 text-blue-400 text-sm font-medium group-hover:gap-3 transition-all">
+          <div className="mt-4 flex items-center gap-2 text-blue-600 text-sm font-bold group-hover:gap-3 transition-all">
             <span>Go to Courses</span>
-            <span className="transition-transform group-hover:translate-x-1">→</span>
-          </div>
-        </Link>
-
-        <Link
-          href="/dashboard/admin/profile"
-          className="glass-card rounded-2xl p-6 sm:p-8 group"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-              👤
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">Profile Settings</h3>
-              <p className="text-xs text-slate-500">Update your name and profile photo</p>
-            </div>
-          </div>
-          <p className="text-sm text-slate-400 leading-relaxed">
-            Customize your admin profile with a display name and photo. Changes persist across all your sessions.
-          </p>
-          <div className="mt-4 flex items-center gap-2 text-amber-400 text-sm font-medium group-hover:gap-3 transition-all">
-            <span>Edit Profile</span>
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </div>
         </Link>

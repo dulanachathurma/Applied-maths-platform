@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       name,
       firstName,
       lastName,
-      email,
+      email: email.trim().toLowerCase(),
       password: hashedPassword,
       contactNumber: contactNumber || '',
       homeAddress: homeAddress || '',

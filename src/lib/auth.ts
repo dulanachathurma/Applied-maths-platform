@@ -44,7 +44,8 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Database connection failed. Please try again later.");
         }
 
-        const user = await User.findOne({ email: credentials.email });
+        const normalizedEmail = credentials.email.trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
 
         if (!user || !user.password) {
           throw new Error("Invalid email or password");
