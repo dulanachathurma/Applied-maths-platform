@@ -67,8 +67,8 @@ export default function Navbar() {
               href={link.href}
               className={`transition-colors pb-0.5 ${
                 isActive
-                  ? "text-amber-500 border-b-2 border-amber-500 font-bold"
-                  : "text-slate-700 hover:text-amber-500"
+                  ? "text-amber-400 border-b-2 border-amber-400 font-bold"
+                  : "text-slate-300 hover:text-white"
               }`}
             >
               {link.name}
@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className="relative">
           <button
             onClick={() => setLangDropdown(!langDropdown)}
-            className="flex items-center space-x-1 text-blue-600 hover:text-blue-500 font-semibold text-xs uppercase"
+            className="flex items-center space-x-1 text-slate-300 hover:text-white font-semibold text-xs uppercase"
           >
             <span className="text-sm">🌐</span>
             <span>{language === "si" ? "සිංහල" : "ENGLISH"}</span>
@@ -130,12 +130,12 @@ export default function Navbar() {
           </div>
         ) : (
           <div className="flex items-center space-x-3">
-            <Link href="/login" className="text-slate-600 hover:text-slate-900 text-xs font-medium">
+            <Link href="/login" className="text-slate-300 hover:text-white text-xs font-medium">
               {language === "si" ? "ඇතුළු වන්න" : "Log in"}
             </Link>
             <Link
               href="/register"
-              className="bg-amber-500 hover:bg-amber-400 text-white px-3.5 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-3.5 py-1.5 rounded-md text-xs font-bold transition-colors shadow-sm"
             >
               {language === "si" ? "ලියාපදිංචි වන්න" : "Sign up"}
             </Link>
@@ -145,7 +145,7 @@ export default function Navbar() {
 
       {/* Mobile hamburger */}
       <button
-        className="md:hidden text-slate-700 p-2"
+        className="md:hidden text-white p-2"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -19,22 +19,22 @@ export const authOptions: NextAuthOptions = {
 
         // ─── Admin hardcoded check (works without DB) ───────────────────────
         if (
-          (credentials.email === "admin" || credentials.email === "admin@admin.com") &&
-          credentials.password === "Admin@123"
+          credentials.email === "admin@gmail.com" &&
+          credentials.password === "admin@123"
         ) {
           // Try to persist admin in DB if possible (non-blocking)
           try {
             await dbConnect();
-            const hashedPassword = await bcrypt.hash("Admin@123", 10);
+            const hashedPassword = await bcrypt.hash("admin@123", 10);
             await User.findOneAndUpdate(
-              { email: "admin" },
-              { $setOnInsert: { name: "Admin", email: "admin", password: hashedPassword, role: "admin", image: "" } },
+              { email: "admin@gmail.com" },
+              { $setOnInsert: { name: "Admin", email: "admin@gmail.com", password: hashedPassword, role: "admin", image: "" } },
               { upsert: true, new: true, setDefaultsOnInsert: true }
             );
           } catch {
             // DB unavailable — admin login still works
           }
-          return { id: "admin-001", name: "Admin", email: "admin", role: "admin", image: "" };
+          return { id: "admin-001", name: "Admin", email: "admin@gmail.com", role: "admin", image: "" };
         }
 
         // Regular user login — requires DB
