@@ -35,12 +35,12 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, image, contactNumber, homeAddress } = await req.json();
+    const { name, image, contactNumber, homeAddress, district, schoolName, alYear } = await req.json();
     await dbConnect();
 
     const updatedUser = await User.findOneAndUpdate(
       { email: session.user.email },
-      { name, image, contactNumber, homeAddress },
+      { name, image, contactNumber, homeAddress, district, schoolName, alYear },
       { returnDocument: 'after' }
     );
 

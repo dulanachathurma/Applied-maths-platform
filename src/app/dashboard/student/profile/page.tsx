@@ -9,6 +9,9 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
+  const [district, setDistrict] = useState("");
+  const [schoolName, setSchoolName] = useState("");
+  const [alYear, setAlYear] = useState("");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -22,6 +25,9 @@ export default function ProfilePage() {
         if (data.email) setEmail(data.email);
         if (data.contactNumber) setContactNumber(data.contactNumber);
         if (data.homeAddress) setHomeAddress(data.homeAddress);
+        if (data.district) setDistrict(data.district);
+        if (data.schoolName) setSchoolName(data.schoolName);
+        if (data.alYear) setAlYear(data.alYear);
         if (data.image) setImage(data.image);
       })
       .catch(() => {
@@ -58,7 +64,7 @@ export default function ProfilePage() {
     const res = await fetch("/api/user/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, image, contactNumber, homeAddress }),
+      body: JSON.stringify({ name, image, contactNumber, homeAddress, district, schoolName, alYear }),
     });
 
     if (res.ok) {
@@ -128,6 +134,39 @@ export default function ProfilePage() {
               className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Beliatta, Southern Province"
               rows={3}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-slate-700">District</label>
+            <input
+              type="text"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your District"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-slate-700">School Name</label>
+            <input
+              type="text"
+              value={schoolName}
+              onChange={(e) => setSchoolName(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your School"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-slate-700">A/L Year</label>
+            <input
+              type="text"
+              value={alYear}
+              onChange={(e) => setAlYear(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="2026 A/L"
             />
           </div>
           
