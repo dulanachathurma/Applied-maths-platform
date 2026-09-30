@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -27,10 +27,9 @@ export default function Login() {
       if (res?.error) {
         setError("Invalid email or password. Please try again.");
       } else if (res?.ok) {
-        // Fetch session to get role
-        const sessionRes = await fetch("/api/auth/session");
-        const session = await sessionRes.json();
-        const role = session?.user?.role;
+        // Fetch session to get role safely
+        const session = await getSession();
+        const role = (session?.user as any)?.role;
         if (role === "admin") {
           router.push("/dashboard/admin");
         } else {
@@ -38,8 +37,9 @@ export default function Login() {
         }
         router.refresh();
       }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      console.error("Login catch error:", err);
+      setError(err?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
